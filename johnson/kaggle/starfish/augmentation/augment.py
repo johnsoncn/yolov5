@@ -28,7 +28,7 @@ class CFG:
     aug_box_time = 8 ### total times augmentation
     use_coco2yolo = False
 
-!rm -rf $CFG.path_dataset
+#!rm -rf $CFG.path_dataset
 
 def get_path(row):
     row['image_path'] = f'../input/tensorflow-great-barrier-reef/train_images/video_{row.video_id}/{row.video_frame}.jpg'
