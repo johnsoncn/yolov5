@@ -12,16 +12,16 @@
 #val: val2017.txt  # train images (relative to 'path') 5000 images
 #test: test-dev2017.txt  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
 
-train: /home/dingchaofan/yolov5/data/dataset_1207/dataset_1207/images
-val: /home/dingchaofan/yolov5/data/dataset_1207/dataset_1207/images
+train: /home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images
+val: /home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images
 
 # Classes
 nc: 1  # number of classes
 names: [ 'UI' ]  # class names
 
 
-# python detect.py --weights=runs/train/exp8/weights/best.pt --source /home/dingchaofan/yolov5/data/dataset_1206/dataset_1206/images/50640.png --view-img
+# python detect.py --weights=runs/train/UI/weights/best.pt --source /home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images/64710.png --iou-thres 0.1 --conf-thres 0.5
 
-# python train.py --img 640 --batch 16 --epochs 50 --data data/UI.yaml --hyp data/hyps/hyp_UI.yaml --weights yolov5s.pt
+# python train.py --img 640 --batch 16 --epochs 50 --data /home/dingchaofan/yolov5/johnson/UI/UI.yaml --hyp /home/dingchaofan/yolov5/johnson/UI/data/hyp.UI.yaml --name UI --weights yolov5s.pt
 
 

@@ -14,7 +14,7 @@
 #val: valid  # val images (relative to 'path')
 
 #path: /home/dingchaofan/data/barrier_reef_data/fulldata/images
-path: /home/dingchaofan/dataset/starfish/data/fulldata/images
+path: /home/dingchaofan/dataset/starfish/data/labeled_data/images
 
 train: train  # train images (relative to 'path')
 val: valid  # val images (relative to 'path')
@@ -43,7 +43,7 @@ names: [ 'starfish' ]  # class names
 #BATCH     = 8
 #EPOCHS    = 25
 
-# python train.py --img 1280 --batch 16 --epochs 30 --data starfish.yaml --weights yolov5m.pt
+# python train.py --img 1960 --batch 8 --epochs 30 --data /home/dingchaofan/yolov5/johnson/kaggle/starfish/data/starfish.yaml --weights yolov5m.pt --evolve
 
 
 # python train.py --img 3600 --batch 4 --epochs 50 --data starfish.yaml --weights yolov5s6.pt --name l6_3600_uflip_vm5_f1 --hyp data/hyps/hyp.heavy.2.yaml
