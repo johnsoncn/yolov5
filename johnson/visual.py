@@ -60,8 +60,8 @@ class VisualLabel(object):
 
 
 if __name__ == "__main__":
-    image_dir = "/home/dingchaofan/yolov5/data/dataset_1207/dataset_1207/images"
-    label_dir = "/home/dingchaofan/yolov5/data/dataset_1207/dataset_1207/labels"
+    image_dir = "/home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images"
+    label_dir = "/home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/labels"
 
     visual = VisualLabel(image_dir, label_dir)
-    visual.main(save=False)
+    visual.main(save=True)
