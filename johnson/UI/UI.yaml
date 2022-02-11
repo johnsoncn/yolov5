@@ -20,7 +20,7 @@ nc: 1  # number of classes
 names: [ 'UI' ]  # class names
 
 
-# python detect.py --hide-conf --hide-labels --weights=runs/train/UI6/weights/best.pt --source /home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images/64710.png --iou-thres 0.1 --conf-thres 0.5 --img 1280
+# python detect.py --hide-conf --hide-labels --weights=runs/train/UI15/weights/best.pt --source /home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images/ --iou-thres 0.1 --conf-thres 0.5 --img 1080
 
 # python train.py --img 1080 --batch 16 --epochs 500 --data /home/dingchaofan/yolov5/johnson/UI/UI.yaml --hyp /home/dingchaofan/yolov5/johnson/UI/data/hyp.UI.yaml --name UI --weights yolov5s.pt
 

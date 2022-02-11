@@ -7,7 +7,7 @@
 
 import numpy as np
 from tqdm import tqdm
-tqdm.pandas()
+# tqdm.pandas()
 import pandas as pd
 import os
 import cv2
@@ -21,9 +21,9 @@ import torch
 from PIL import Image
 import ast
 from tools import *
-from torchsummary import summary
-from pseudo_tools import run_wbf, TTAImage, rotBoxes90, detect1Image
-from ensemble_boxes import letterbox
+# from torchsummary import summary
+# from pseudo_tools import run_wbf, TTAImage, rotBoxes90, detect1Image
+# from ensemble_boxes import letterbox
 
 
 # 0.626的训练不变！只是改了推理尺寸10000
@@ -34,14 +34,16 @@ from ensemble_boxes import letterbox
 class Starfish(object):
 
     def __init__(self):
-        self.IMG_SIZE = 3888
+        self.IMG_SIZE = 6400
         # self.ROOT_DIR = '/home/dingchaofan/data/barrier_reef_data/dataset'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/exp34/weights/last.pt'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/10000_resolution/weights/10000.pt'
-        self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/l6_3600_uflip_vm5_f12_up/f1/best.pt'
+        # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/l6_3600_uflip_vm5_f12_up/f1/best.pt'
+        self.CKPT_PATH = '/home/dingchaofan/yolov5/johnson/kaggle/starfish/weights/f2_sub2.pt/f2_sub2.pt'
+
         self.model = self.load_model(self.CKPT_PATH)
 
-    def load_model(self, ckpt_path, conf=0.25, iou=0.50):
+    def load_model(self, ckpt_path, conf=0.60, iou=0.50):
         model = torch.hub.load('/home/dingchaofan/yolov5',   # ../input/yolov5-lib-ds
                                'custom',
                                path=ckpt_path,
@@ -51,14 +53,19 @@ class Starfish(object):
         model.iou = iou
         return model
 
-    def predict(self, model, img, size, augment=False):
+    def predict(self, model, img, size, augment=False, pseudo=False):
 
         height, width = img.shape[:2]
         results = model(img, size=size, augment=augment)  # custom inference size
         preds = results.pandas().xyxy[0]
         bboxes = preds[['xmin', 'ymin', 'xmax', 'ymax']].values
         if len(bboxes):
-            bboxes = voc2coco(bboxes, height, width).astype(int)
+            if pseudo:
+                # transfer to yolo format if predicting pseudo label
+                bboxes = voc2yolo(bboxes, height, width)
+            else:
+                # normal prediction (coco format)
+                bboxes = voc2coco(bboxes, height, width)
             confs = preds.confidence.values
             return bboxes, confs
         else:
@@ -74,8 +81,7 @@ class Starfish(object):
                 annot += ' '
             annot = annot.strip(' ')
         else:
-            print('[INFO] no bbox detected')
-            # return None
+            return False
         return annot
 
     def kaggle_env(self):
@@ -128,33 +134,44 @@ class Starfish(object):
         # cv2.destroyAllWindows()
         bboxes, confs = self.predict(self.model, img, size=self.IMG_SIZE, augment=False)
         annot = self.format_prediction(bboxes, confs)
-        if annot != None and save == True:
+        if annot and save == True:
             plt_img = show_img(img, bboxes, bbox_format='coco')
             plt_img.save('2.png')
             # plt_img.show()
             # plt_img.close()
         return annot
 
-    def test_pseudo(self):
-        is_TTA = True
-
-        # unlabeled_dir = '/home/dingchaofan/dataset/starfish/data/pseudo_data/images/unlabeled_images/train/'
-        unlabeled_dir = '/home/dingchaofan/dataset/starfish/data/labeled_data/images/train/'
+    def test_pseudo(self, save_txt=True):
         import os
-        data_list = os.listdir(unlabeled_dir)
 
-        for idx, path in enumerate(data_list):
-            # img = cv2.imread(unlabeled_dir+path)[..., ::-1]
-            # print(img.shape)
-            # print(img.ndimension())
-            # img = img.unsqueeze(0)
-            # bboxes, confis = self.predict(self.model, img, size=self.IMG_SIZE, augment=True)
+        root_dir = '/home/dingchaofan/dataset/starfish/data/pseudo_data/'
 
+        unlabeled_images = root_dir + 'images/unlabeled_images/train/'
+        label_save_to = root_dir + 'labels/train/'
 
-            img = cv2.imread(unlabeled_dir+path)
-            boxes, scores = detect1Image(img, self.IMG_SIZE, self.model, 'cuda', 0.25, 0.5)
+        # results_with_label = root_dir + 'test_results3'
+        os.makedirs(label_save_to, exist_ok=True)
 
-            print(boxes)
+        import os
+        data_list = os.listdir(unlabeled_images)
+
+        for idx in tqdm(range(len(data_list))):
+            img = cv2.imread(unlabeled_images + data_list[idx])
+            bboxes, confs = self.predict(self.model, img, size=self.IMG_SIZE, augment=True, pseudo=True)
+            annot = self.format_prediction(bboxes, confs)
+
+            if annot and save_txt == True:
+                print(data_list[idx])
+
+                name = data_list[idx].replace('jpg', 'txt')
+                print(name, annot)
+
+                with open(label_save_to + name, "w", encoding="utf-8") as f:
+                    f.write(annot)
+
+                # plt_img = show_img(img, bboxes, bbox_format='yolo')
+                # plt_img.save(f'{results_with_label}/{data_list[idx]}.png')
+
 
 
     def read(self):
@@ -167,7 +184,7 @@ starfish = Starfish()
 
 if __name__ == "__main__":
 
-    from pseudo_labeling import TTAImage
+    # from pseudo_labeling import TTAImage
 
     # src = '/home/dingchaofan/data/barrier_reef_data/dataset/images/valid/0-4237.jpg'
     # src = '/home/dingchaofan/dataset/starfish/data/pseudo_data/images/unlabeled_images/train/2-191.jpg'

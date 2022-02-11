@@ -49,18 +49,19 @@ class VisualLabel(object):
 
     def main(self, save=False):
         for name in self.img_files:
-            image = self.read_img(os.path.join(self.image_dir, name))
-            pos = self.read_txt(os.path.join(self.label_dir, name.replace('png', 'txt')))
-            drawed_image = self.draw(image=image, pos=pos)
-
-            if save:
-                save_to = 'ui_visual_label/' + name
-                cv2.imwrite(save_to, drawed_image)
-                print('save to :', save_to)
+            if name.endswith('jpg') or name.endswith('png'):
+                image = self.read_img(os.path.join(self.image_dir, name))
+                pos = self.read_txt(os.path.join(self.label_dir, name.replace('png', 'txt')))
+                drawed_image = self.draw(image=image, pos=pos)
+                if save:
+                    save_to = 'visual_UI/' + name
+                    cv2.imwrite(save_to, drawed_image)
+                    print('save to :', save_to)
 
 
 if __name__ == "__main__":
-    image_dir = "/home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images"
+    image_dir = '/home/dingchaofan/yolov5/runs/detect/exp19/'
+    # image_dir = "/home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/images"
     label_dir = "/home/dingchaofan/other/yolov5/data/dataset_1207/dataset_1207/labels"
 
     visual = VisualLabel(image_dir, label_dir)
