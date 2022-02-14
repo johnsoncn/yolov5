@@ -72,7 +72,7 @@ def coco2yolo(bboxes, image_height=720, image_width=1280):
     yolo => [xmid, ymid, w, h] (normalized)
     """
     # print('bboxes', bboxes)
-    # bboxes = bboxes.copy().astype(float)  # otherwise all value will be 0 as voc_pascal dtype is np.int
+    bboxes = bboxes.copy().astype(float)  # otherwise all value will be 0 as voc_pascal dtype is np.int
 
     # normolizinig
     bboxes[..., [0, 2]] = bboxes[..., [0, 2]] / image_width

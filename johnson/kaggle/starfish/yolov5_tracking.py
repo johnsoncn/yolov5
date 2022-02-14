@@ -159,7 +159,7 @@ class Starfish(object):
     # AUGMENT   = True
 
     def __init__(self, chpt_path, hub_load):
-        self.IMG_SIZE = 9000
+        self.IMG_SIZE = 6400
         # self.ROOT_DIR = '/home/dingchaofan/data/barrier_reef_data/dataset'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/exp34/weights/last.pt'
         self.CKPT_PATH = chpt_path
@@ -167,7 +167,7 @@ class Starfish(object):
 
         self.model = self.load_model(self.CKPT_PATH)
 
-    def load_model(self, ckpt_path, conf=0.25, iou=0.40):
+    def load_model(self, ckpt_path, conf=0.25, iou=0.50):
         model = torch.hub.load(self.HUB_LOAD, # /kaggle/input/yolov5-lib-ds
                                'custom',
                                path=ckpt_path,
@@ -240,7 +240,8 @@ class Starfish(object):
 
 
 
-CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/10000_resolution/weights/10000.pt'
+# CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/10000_resolution/weights/10000.pt'
+CKPT_PATH = '/home/dingchaofan/yolov5/johnson/kaggle/starfish/weights/f2_sub2.pt/f2_sub2.pt'
 HUB_LOAD = '/home/dingchaofan/yolov5'
 
 # CKPT_PATH = '../input/1110000/best.pt'
