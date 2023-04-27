@@ -4,7 +4,7 @@
 @Author  : Johnson
 @FileName: inference.py
 """
-
+import time
 from tqdm import tqdm
 # tqdm.pandas()
 import pandas as pd
@@ -34,17 +34,17 @@ import numpy as np
 class Starfish(object):
 
     def __init__(self):
-        self.IMG_SIZE = 6400
+        self.IMG_SIZE = 10500
         # self.ROOT_DIR = '/home/dingchaofan/data/barrier_reef_data/dataset'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/exp34/weights/last.pt'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/10000_resolution/weights/10000.pt'
         # self.CKPT_PATH = '/home/dingchaofan/yolov5/runs/train/l6_3600_uflip_vm5_f12_up/f1/best.pt'
-        self.CKPT_PATH = '/home/dingchaofan/yolov5/johnson/kaggle/starfish/weights/f2_sub2.pt/f2_sub2.pt'
-
+        # self.CKPT_PATH = '/home/dingchaofan/yolov5/johnson/kaggle/starfish/weights/f2_sub2.pt/f2_sub2.pt'
+        self.CKPT_PATH = 'f2_sub2.pt'
         self.model = self.load_model(self.CKPT_PATH)
 
     def load_model(self, ckpt_path, conf=0.60, iou=0.50):
-        model = torch.hub.load('/home/dingchaofan/yolov5',   # ../input/yolov5-lib-ds
+        model = torch.hub.load(f'C:\\Users\\dingchaofan\\Desktop\\yolov5',   # ../input/yolov5-lib-ds # C:\Users\dingchaofan\Desktop\yolov5 # /home/dingchaofan/yolov5
                                'custom',
                                path=ckpt_path,
                                source='local',
@@ -132,7 +132,14 @@ class Starfish(object):
         # cv2.imshow('img1', img)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
+        torch.cuda.synchronize()
+        start = time.time()
+
         bboxes, confs = self.predict(self.model, img, size=self.IMG_SIZE, augment=False)
+        torch.cuda.synchronize()
+        end = time.time()
+        print(end-start)
+
         annot = self.format_prediction(bboxes, confs)
         if annot and save == True:
             plt_img = show_img(img, bboxes, bbox_format='coco')
@@ -286,9 +293,16 @@ if __name__ == "__main__":
     #     print(src, annot)
 
     # annot = starfish.test_single(src, save=False)
+
+    import sys
+    print(sys.platform)
+
     # print(annot)
 
-    starfish.evaluate_f2()
+    # starfish.evaluate_f2()
+    while True:
+        annot = starfish.test_single(src= '0e908864493871.5b028d5c66a8a.png', save=False)
+        print(annot)
 
     # starfish.test_kaggle()
     # starfish.read()
